@@ -125,14 +125,13 @@
         </button>
         <button class="btn-nav"
           style="padding:0.75rem 1.8rem;font-size:0.95rem;"
-          onclick="loadDemo()">
-          See a Thread
+          onclick="openThreadsPanel()">
+          Threads
         </button>
       </div>
       <div class="hero-stats">
-        <div class="stat"><div class="stat-n">4,821</div><div class="stat-l">Papers Discussed</div></div>
-        <div class="stat"><div class="stat-n">12,340</div><div class="stat-l">Researchers</div></div>
-        <div class="stat"><div class="stat-n">38%</div><div class="stat-l">Avg. Replication Rate</div></div>
+        <div class="stat"><div class="stat-n" id="stat-papers">—</div><div class="stat-l">Papers Discussed</div></div>
+        <div class="stat"><div class="stat-n" id="stat-researchers">—</div><div class="stat-l">Researchers</div></div>
       </div>
     </div>
 
@@ -146,30 +145,9 @@
         <button class="btn-search" onclick="searchDOI()">→ Open Discussion Thread</button>
 
         <div class="divider">or browse active threads</div>
-        <div class="recent-label">Recently Active</div>
-
-        <div class="paper-chips">
-          <button class="pchip" onclick="loadDemo()">
-            <div class="cdot dg"></div>
-            <div>
-              <div class="ctitle">Attention Is All You Need — Vaswani et al., 2017</div>
-              <div class="cmeta">10.48550/arXiv.1706.03762 · 47 posts · 89% replicated</div>
-            </div>
-          </button>
-          <button class="pchip" onclick="loadDemoB()">
-            <div class="cdot dr"></div>
-            <div>
-              <div class="ctitle">Power posing affects testosterone — Carney et al., 2010</div>
-              <div class="cmeta">10.1177/0956797610383437 · 31 posts · 12% replicated</div>
-            </div>
-          </button>
-          <button class="pchip" onclick="loadDemoC()">
-            <div class="cdot da"></div>
-            <div>
-              <div class="ctitle">Microbiome composition & depression — Cryan et al., 2019</div>
-              <div class="cmeta">10.1038/s41579-019-0222-3 · 22 posts · 54% replicated</div>
-            </div>
-          </button>
+        <div class="recent-label">Recently Commented</div>
+        <div class="paper-chips" id="recent-chips">
+          <div class="chips-loading">Loading recent discussions…</div>
         </div>
       </div>
     </div>
@@ -228,6 +206,36 @@
       <li><a href="#">Privacy</a></li>
     </ul>
   </footer>
+
+<!-- ══════════════════ THREADS PANEL ══════════════════ -->
+<div class="threads-overlay" id="threads-overlay" onclick="closeThreadsPanel(event)">
+  <div class="threads-panel">
+    <div class="threads-panel-hdr">
+      <div>
+        <div class="threads-panel-title">All Threads</div>
+        <div class="threads-panel-sub">Papers with active discussions</div>
+      </div>
+      <button class="threads-close" onclick="closeThreadsPanel()">✕</button>
+    </div>
+
+    <!-- Controls -->
+    <div class="threads-controls">
+      <input type="text" class="threads-search" id="threads-search"
+        placeholder="Search by title or DOI…" oninput="filterThreads()">
+      <div class="threads-sort-row">
+        <span class="sort-label">Sort:</span>
+        <button class="sort-btn active" id="tsort-recent" onclick="setThreadSort(this,'recent')">Most Recent</button>
+        <button class="sort-btn" id="tsort-posts"  onclick="setThreadSort(this,'posts')">Most Posts</button>
+        <button class="sort-btn" id="tsort-rep"    onclick="setThreadSort(this,'rep')">Replication Score</button>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="threads-list" id="threads-list">
+      <div class="chips-loading">Loading threads…</div>
+    </div>
+  </div>
+</div>
 
 <!-- Load Supabase from CDN first -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

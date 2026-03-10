@@ -1,0 +1,189 @@
+/* ============================================================
+   nav.css — Top navigation bar + auth modal + profile dropdown
+   ============================================================ */
+
+/* ── Nav bar ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: var(--navy);
+  border-bottom: 2px solid var(--amber);
+  z-index: 500;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+  height: 60px;
+}
+
+.nav-brand {
+  display: flex; align-items: baseline; gap: 0.6rem;
+  text-decoration: none; cursor: pointer;
+}
+.nav-brand-dev {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.45rem; font-weight: 700;
+  color: var(--amber-light);
+}
+.nav-brand-lat {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.8rem; font-style: italic;
+  color: rgba(255,255,255,0.4); letter-spacing: 0.1em;
+}
+
+.nav-right { display: flex; align-items: center; gap: 1.2rem; }
+
+.btn-nav {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.75);
+  padding: 0.4rem 1rem;
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.8rem; cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  letter-spacing: 0.04em;
+}
+.btn-nav:hover { border-color: var(--amber); color: var(--amber-light); }
+.btn-nav-filled {
+  background: var(--amber); border-color: var(--amber);
+  color: var(--navy); font-weight: 600;
+}
+.btn-nav-filled:hover {
+  background: var(--amber-light); border-color: var(--amber-light); color: var(--navy);
+}
+
+.nav-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--amber); color: var(--navy);
+  font-family: 'Playfair Display', serif;
+  font-size: 0.85rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.nav-username { color: rgba(255,255,255,0.8); font-size: 0.82rem; }
+
+/* ── Profile dropdown ── */
+.profile-wrap { position: relative; }
+
+.profile-menu {
+  position: absolute; top: 60px; right: 0;
+  background: white;
+  border: 1px solid var(--border-dark);
+  border-radius: 4px; min-width: 200px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  z-index: 600; display: none;
+}
+.profile-menu.open { display: block; }
+
+.pm-item {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.7rem 1rem; cursor: pointer;
+  transition: background 0.15s;
+  font-size: 0.85rem; color: var(--ink);
+  border: none; background: none;
+  width: 100%; text-align: left;
+}
+.pm-item:hover { background: var(--paper-dark); }
+.pm-sep { height: 1px; background: var(--border); margin: 0.3rem 0; }
+
+/* ── Auth modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(10,15,30,0.7);
+  z-index: 800;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(3px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--paper);
+  border: 1.5px solid var(--border-dark);
+  border-radius: 6px; width: 100%; max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  transform: translateY(16px);
+  transition: transform 0.25s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+
+.modal-header {
+  background: var(--navy);
+  padding: 1.4rem 1.6rem;
+  border-radius: 4px 4px 0 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem; font-weight: 600; color: white;
+}
+.modal-title span { color: var(--amber-light); font-style: italic; }
+
+.modal-close {
+  background: none; border: none;
+  color: rgba(255,255,255,0.5); font-size: 1.2rem;
+  cursor: pointer; line-height: 1; padding: 0.2rem;
+}
+.modal-close:hover { color: white; }
+
+.modal-body { padding: 1.6rem; }
+
+.modal-tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+  margin-bottom: 1.4rem;
+}
+.mtab {
+  flex: 1; padding: 0.6rem;
+  background: none; border: none;
+  font-family: 'Source Serif 4', serif; font-size: 0.85rem;
+  cursor: pointer; color: var(--muted);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all 0.2s;
+}
+.mtab.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+/* ── Form elements (shared by auth + any form) ── */
+.form-group { margin-bottom: 1.1rem; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+.form-label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; color: var(--muted);
+  letter-spacing: 0.15em; text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+.form-input {
+  width: 100%; padding: 0.75rem 0.9rem;
+  font-family: 'Source Serif 4', serif; font-size: 0.9rem;
+  border: 1.5px solid var(--border-dark); border-radius: 2px;
+  background: white; color: var(--ink); outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px rgba(200,134,42,0.1);
+}
+.form-hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; font-style: italic; }
+
+.role-select {
+  width: 100%; padding: 0.75rem 0.9rem;
+  font-family: 'Source Serif 4', serif; font-size: 0.9rem;
+  border: 1.5px solid var(--border-dark); border-radius: 2px;
+  background: white; color: var(--ink); outline: none; cursor: pointer;
+}
+
+.btn-full {
+  width: 100%; background: var(--navy); color: white; border: none;
+  padding: 0.85rem;
+  font-family: 'Source Serif 4', serif; font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; border-radius: 2px;
+  transition: background 0.2s; margin-top: 0.4rem;
+}
+.btn-full:hover { background: var(--navy-mid); }
+
+.modal-footer-note {
+  text-align: center; font-size: 0.78rem; color: var(--muted);
+  margin-top: 1rem; font-style: italic;
+}
+.modal-footer-note a { color: var(--amber); cursor: pointer; text-decoration: underline; }

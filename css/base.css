@@ -1,0 +1,99 @@
+/* ============================================================
+   base.css — Design tokens, resets, typography, animations
+   Shared across every page. Load this first.
+   ============================================================ */
+
+/* ── Design Tokens ── */
+:root {
+  --ink:          #0f1117;
+  --paper:        #f5f0e8;
+  --paper-dark:   #ede7d9;
+  --amber:        #c8862a;
+  --amber-light:  #e8a84a;
+  --amber-pale:   #f5e6c8;
+  --navy:         #1a2744;
+  --navy-mid:     #253659;
+  --teal:         #2a7a6e;
+  --teal-light:   #3a9a8c;
+  --red:          #c0392b;
+  --green:        #27ae60;
+  --muted:        #6b6358;
+  --border:       #d4c9b4;
+  --border-dark:  #b8a990;
+  --shadow:       0 2px 16px rgba(0,0,0,0.08);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+/* ── Body ── */
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Grain texture overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0.35;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Shared Utility Classes ── */
+.btn-sm {
+  padding: 0.38rem 0.85rem;
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.8rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-sm-ghost {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.btn-sm-ghost:hover { border-color: var(--border-dark); color: var(--ink); }
+.btn-sm-fill {
+  background: var(--navy);
+  border: 1px solid var(--navy);
+  color: white;
+  font-weight: 600;
+}
+.btn-sm-fill:hover { background: var(--navy-mid); }
+
+/* ── Toast notification ── */
+.toast {
+  position: fixed;
+  bottom: 1.8rem; right: 1.8rem;
+  background: var(--navy);
+  color: white;
+  padding: 0.75rem 1.1rem;
+  border-left: 3px solid var(--amber);
+  border-radius: 2px;
+  font-size: 0.83rem;
+  z-index: 9998;
+  transform: translateX(130%);
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  max-width: 300px;
+}
+.toast.show { transform: translateX(0); }
+
+/* ── Responsive breakpoint ── */
+@media (max-width: 900px) {
+  .hide-mobile { display: none !important; }
+}

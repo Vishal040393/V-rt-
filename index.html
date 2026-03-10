@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vārtā — Scientific Dialogue Platform</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Styles — base first, then page-specific -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav>
+    <div class="nav-brand">
+      <span class="nav-brand-dev">वार्ता</span>
+      <span class="nav-brand-lat">Vārtā</span>
+    </div>
+    <div class="nav-right" id="nav-right">
+      <button class="btn-nav" onclick="openAuth('login')">Sign In</button>
+      <button class="btn-nav btn-nav-filled" onclick="openAuth('signup')">Join Free</button>
+    </div>
+  </nav>
+
+  <!-- ── Auth modal ── -->
+  <div class="modal-overlay" id="auth-modal" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title"><span>वार्ता</span> Vārtā</div>
+        <button class="modal-close" onclick="closeAuth()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button class="mtab active" id="tab-login"  onclick="switchAuthTab('login')">Sign In</button>
+          <button class="mtab"        id="tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+        </div>
+
+        <!-- Login -->
+        <div id="login-form">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="login-email" placeholder="you@university.edu">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="login-pass" placeholder="••••••••">
+          </div>
+          <button class="btn-full" onclick="doLogin()">Sign In →</button>
+          <div class="modal-footer-note">
+            Don't have an account? <a onclick="switchAuthTab('signup')">Create one free</a>
+          </div>
+        </div>
+
+        <!-- Sign up -->
+        <div id="signup-form" style="display:none;">
+          <div class="field-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" id="su-fname" placeholder="Arjun">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" id="su-lname" placeholder="Sharma">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Institutional Email</label>
+            <input type="email" class="form-input" id="su-email" placeholder="researcher@university.edu">
+            <div class="form-hint">Use your institutional email for author verification</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <select class="role-select" id="su-role">
+              <option>PhD Candidate</option>
+              <option>Postdoctoral Researcher</option>
+              <option>Assistant Professor</option>
+              <option>Associate Professor</option>
+              <option>Full Professor</option>
+              <option>Research Scientist (Industry)</option>
+              <option>Independent Researcher</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Institution</label>
+            <input type="text" class="form-input" id="su-inst" placeholder="MIT, IIT Delhi, Max Planck…">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="su-pass" placeholder="Min. 8 characters">
+          </div>
+          <button class="btn-full" onclick="doSignup()">Create Account →</button>
+          <div class="modal-footer-note">
+            Already registered? <a onclick="switchAuthTab('login')">Sign in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast ── -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ══════════════════ HERO ══════════════════ -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-bg-text">वार्ता</div>
+      <p class="eyebrow">Open Scientific Dialogue</p>
+      <h1 class="hero-title">Where research<br>finds its <em>voice</em></h1>
+      <p class="hero-sub">वार्ता (vārtā) — talk; discourse; negotiation</p>
+      <p class="hero-desc">
+        Bridging the gap between published results and lived research experience.
+        Share replication attempts, methodological insights, and findings that never made it to print.
+      </p>
+      <div class="hero-btns">
+        <button class="btn-nav btn-nav-filled"
+          style="padding:0.75rem 1.8rem;font-size:0.95rem;"
+          onclick="document.getElementById('doi-input').focus()">
+          Search a Paper
+        </button>
+        <button class="btn-nav"
+          style="padding:0.75rem 1.8rem;font-size:0.95rem;"
+          onclick="loadDemo()">
+          See a Thread
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">4,821</div><div class="stat-l">Papers Discussed</div></div>
+        <div class="stat"><div class="stat-n">12,340</div><div class="stat-l">Researchers</div></div>
+        <div class="stat"><div class="stat-n">38%</div><div class="stat-l">Avg. Replication Rate</div></div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="search-panel">
+        <h2 class="search-heading">Find a Paper</h2>
+        <p class="search-sub">Enter a DOI to access its thread — or start a new one.</p>
+        <label class="doi-label" for="doi-input">DOI</label>
+        <input type="text" class="doi-input" id="doi-input"
+          placeholder="10.1038/s41586-021-03819-2">
+        <button class="btn-search" onclick="searchDOI()">→ Open Discussion Thread</button>
+
+        <div class="divider">or browse active threads</div>
+        <div class="recent-label">Recently Active</div>
+
+        <div class="paper-chips">
+          <button class="pchip" onclick="loadDemo()">
+            <div class="cdot dg"></div>
+            <div>
+              <div class="ctitle">Attention Is All You Need — Vaswani et al., 2017</div>
+              <div class="cmeta">10.48550/arXiv.1706.03762 · 47 posts · 89% replicated</div>
+            </div>
+          </button>
+          <button class="pchip" onclick="loadDemoB()">
+            <div class="cdot dr"></div>
+            <div>
+              <div class="ctitle">Power posing affects testosterone — Carney et al., 2010</div>
+              <div class="cmeta">10.1177/0956797610383437 · 31 posts · 12% replicated</div>
+            </div>
+          </button>
+          <button class="pchip" onclick="loadDemoC()">
+            <div class="cdot da"></div>
+            <div>
+              <div class="ctitle">Microbiome composition & depression — Cryan et al., 2019</div>
+              <div class="cmeta">10.1038/s41579-019-0222-3 · 22 posts · 54% replicated</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ FEATURES ══════════════════ -->
+  <section class="features" id="features">
+    <div class="feat-header">
+      <p class="eyebrow" style="animation:none;opacity:1;">Platform Features</p>
+      <h2 class="feat-title">Everything researchers <em>actually</em> need</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="fcard">
+        <div class="ficon">🔬</div>
+        <h3 class="ftitle">Replication Tracking</h3>
+        <p class="fdesc">Vote-based replication success rates aggregated from real attempts, with visual dashboards showing community consensus.</p>
+      </div>
+      <div class="fcard">
+        <div class="ficon">✍️</div>
+        <h3 class="ftitle">Rich Text + Math</h3>
+        <p class="fdesc">Full editing with bold, italic, LaTeX equations (KaTeX), image embeds, and blockquotes for rigorous scientific writing.</p>
+      </div>
+      <div class="fcard">
+        <div class="ficon">👤</div>
+        <h3 class="ftitle">Author Verification</h3>
+        <p class="fdesc">Paper authors can verify via institutional email and post with a verified badge, offering direct clarification.</p>
+      </div>
+      <div class="fcard">
+        <div class="ficon">▲▼</div>
+        <h3 class="ftitle">Up/Down Voting</h3>
+        <p class="fdesc">Community-driven quality signals. Upvote helpful reports, downvote misleading claims — net score displayed prominently.</p>
+      </div>
+      <div class="fcard">
+        <div class="ficon">🏷️</div>
+        <h3 class="ftitle">Structured Categories</h3>
+        <p class="fdesc">Tag posts as Full Replication, Partial, Failed, Methodology Note, or Discussion for filtering and meta-analysis.</p>
+      </div>
+      <div class="fcard">
+        <div class="ficon">🤝</div>
+        <h3 class="ftitle">Threaded Replies</h3>
+        <p class="fdesc">Respond directly to specific posts and build nuanced scientific conversations that go beyond simple comments.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer>
+    <div>
+      <div class="fbrand">वार्ता Vārtā</div>
+      <div class="ftext">Open-source scientific dialogue platform</div>
+    </div>
+    <ul class="flinks">
+      <li><a href="https://github.com" target="_blank">GitHub</a></li>
+      <li><a href="#">API</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Privacy</a></li>
+    </ul>
+  </footer>
+
+<!-- Load Supabase from CDN first -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Then your files as normal scripts, no type="module" -->
+<script src="js/supabase.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/papers.js"></script>
+<script src="js/landing.js"></script> <!-- or thread.js -->
+
+
+</body>
+</html>

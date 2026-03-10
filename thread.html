@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thread — Vārtā</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/thread.css">
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav>
+    <div class="nav-brand">
+      <span class="nav-brand-dev">वार्ता</span>
+      <span class="nav-brand-lat">Vārtā</span>
+    </div>
+    <div class="nav-right" id="nav-right">
+      <button class="btn-nav" onclick="openAuth('login')">Sign In</button>
+      <button class="btn-nav btn-nav-filled" onclick="openAuth('signup')">Join Free</button>
+    </div>
+  </nav>
+
+  <!-- ── Auth modal ── -->
+  <div class="modal-overlay" id="auth-modal" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title"><span>वार्ता</span> Vārtā</div>
+        <button class="modal-close" onclick="closeAuth()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button class="mtab active" id="tab-login"  onclick="switchAuthTab('login')">Sign In</button>
+          <button class="mtab"        id="tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+        </div>
+
+        <!-- Login -->
+        <div id="login-form">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="login-email" placeholder="you@university.edu">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="login-pass" placeholder="••••••••">
+          </div>
+          <button class="btn-full" onclick="doLogin()">Sign In →</button>
+          <div class="modal-footer-note">
+            Don't have an account? <a onclick="switchAuthTab('signup')">Create one free</a>
+          </div>
+        </div>
+
+        <!-- Sign up -->
+        <div id="signup-form" style="display:none;">
+          <div class="field-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" id="su-fname" placeholder="Arjun">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" id="su-lname" placeholder="Sharma">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Institutional Email</label>
+            <input type="email" class="form-input" id="su-email" placeholder="researcher@university.edu">
+            <div class="form-hint">Use your institutional email for author verification</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <select class="role-select" id="su-role">
+              <option>PhD Candidate</option>
+              <option>Postdoctoral Researcher</option>
+              <option>Assistant Professor</option>
+              <option>Associate Professor</option>
+              <option>Full Professor</option>
+              <option>Research Scientist (Industry)</option>
+              <option>Independent Researcher</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Institution</label>
+            <input type="text" class="form-input" id="su-inst" placeholder="MIT, IIT Delhi, Max Planck…">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="su-pass" placeholder="Min. 8 characters">
+          </div>
+          <button class="btn-full" onclick="doSignup()">Create Account →</button>
+          <div class="modal-footer-note">
+            Already registered? <a onclick="switchAuthTab('login')">Sign in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast ── -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ══════════════════ PAPER HEADER ══════════════════ -->
+  <div class="main-app">
+    <div class="app-hdr">
+      <button class="back-btn" onclick="window.location.href='index.html'">← Back to search</button>
+      <div>
+        <div class="paper-journal" id="pj"></div>
+        <h1 class="paper-title-main" id="pt"></h1>
+        <div class="paper-authors" id="pa"></div>
+        <span class="paper-doi-tag" id="pd"></span>
+        <div class="rep-row">
+          <div style="display:flex;align-items:center;gap:0.8rem;">
+            <span class="mlabel">Replication score</span>
+            <div class="meter-bar"><div class="meter-fill" id="mf" style="width:0%"></div></div>
+            <span class="mpct" id="mp">—</span>
+          </div>
+          <span class="rbadge" id="rb"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ BODY ══════════════════ -->
+    <div class="app-body">
+
+      <!-- ── Thread column ── -->
+      <div class="thread-col">
+
+        <div class="slabel">Share your experience</div>
+
+        <!-- Compose box -->
+        <div class="compose-box">
+          <div class="compose-top-tabs">
+            <button class="ctab active" onclick="setPostType(this,'replicated')">Replication Attempt</button>
+            <button class="ctab"        onclick="setPostType(this,'partial')">Partial Result</button>
+            <button class="ctab"        onclick="setPostType(this,'failed')">Could Not Replicate</button>
+            <button class="ctab"        onclick="setPostType(this,'discussion')">Discussion</button>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="editor-toolbar">
+            <button class="tb-btn" title="Bold"          onclick="fmt('bold')"><b>B</b></button>
+            <button class="tb-btn" title="Italic"        onclick="fmt('italic')"><i>I</i></button>
+            <button class="tb-btn" title="Strikethrough" onclick="fmt('strikeThrough')"><s>S</s></button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" title="Blockquote"       onclick="insertBlockquote()">❝</button>
+            <button class="tb-btn" title="Bullet list"       onclick="fmt('insertUnorderedList')">• ≡</button>
+            <button class="tb-btn" title="Numbered list"     onclick="fmt('insertOrderedList')">1. ≡</button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn tb-math-btn" title="Insert inline math \\( … \\)" onclick="insertMath('inline')">∑ inline</button>
+            <button class="tb-btn tb-math-btn" title="Insert block equation \\[ … \\]" onclick="insertMath('block')">∑ block</button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" title="Embed image by URL" onclick="toggleImgRow()">🖼 URL</button>
+            <button class="tb-btn" title="Horizontal rule"    onclick="fmt('insertHorizontalRule')">─</button>
+          </div>
+
+          <!-- Image URL input -->
+          <div class="img-url-row" id="img-url-row">
+            <input type="text" class="img-url-input" id="img-url-in" placeholder="https://example.com/figure1.png">
+            <button class="btn-insert" onclick="insertImageURL()">Insert</button>
+            <button class="btn-sm btn-sm-ghost" onclick="toggleImgRow()">Cancel</button>
+          </div>
+
+          <!-- Editable area -->
+          <div class="editor-area" id="editor" contenteditable="true"
+            data-placeholder="Describe your replication attempt — setup, data, environment, and results."
+            oninput="updateCharCount()"></div>
+
+          <!-- Footer bar -->
+          <div class="compose-footer-bar">
+            <select class="outcome-sel" id="post-outcome">
+              <option value="replicated">✓ Successfully Replicated</option>
+              <option value="partial">⚬ Partially Replicated</option>
+              <option value="failed">✗ Could Not Replicate</option>
+              <option value="discussion">💬 Discussion / Question</option>
+            </select>
+            <div class="compose-actions">
+              <span class="char-count" id="char-count">0 chars</span>
+              <button class="btn-post" onclick="submitPost()">Post to Thread →</button>
+            </div>
+          </div>
+        </div><!-- /compose-box -->
+
+        <!-- Filter + Sort controls -->
+        <div class="controls-row">
+          <div class="filter-row">
+            <span class="sort-label">Filter:</span>
+            <button class="filt-btn active" onclick="setFilter(this,'all')">All</button>
+            <button class="filt-btn" onclick="setFilter(this,'replicated')">Replicated</button>
+            <button class="filt-btn" onclick="setFilter(this,'partial')">Partial</button>
+            <button class="filt-btn" onclick="setFilter(this,'failed')">Failed</button>
+            <button class="filt-btn" onclick="setFilter(this,'discussion')">Discussion</button>
+          </div>
+          <div class="sort-bar">
+            <span class="sort-label">Sort:</span>
+            <button class="sort-btn active" onclick="setSort(this,'top')">Top</button>
+            <button class="sort-btn"        onclick="setSort(this,'new')">New</button>
+          </div>
+        </div>
+
+        <div class="slabel" id="thread-label">Discussion Thread</div>
+        <div id="thread-posts"></div>
+
+      </div><!-- /thread-col -->
+
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar">
+
+        <div class="scard">
+          <div class="stitle">Outcome Distribution</div>
+          <div class="cbars" id="outcome-chart"></div>
+        </div>
+
+        <div class="scard">
+          <div class="stitle">Tags</div>
+          <div class="tag-cloud" id="tag-cloud"></div>
+        </div>
+
+        <div class="scard">
+          <div class="stitle">Top Contributors</div>
+          <div class="contribs" id="contribs"></div>
+        </div>
+
+        <div class="scard">
+          <div class="stitle">Paper Info</div>
+          <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem;">Copy DOI</div>
+          <button class="doi-copy-btn" onclick="copyDOI()">
+            <span class="doi-copy-text" id="doi-copy-txt"></span>
+            <span class="doi-copy-icon">📋</span>
+          </button>
+          <div style="margin-top:1rem;font-size:0.8rem;">
+            <a id="doi-link" href="#" target="_blank"
+               style="color:var(--amber);text-decoration:none;">View on publisher site →</a>
+          </div>
+        </div>
+
+      </aside>
+    </div><!-- /app-body -->
+  </div><!-- /main-app -->
+
+<!-- Load Supabase from CDN first -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Then your files as normal scripts, no type="module" -->
+<script src="js/supabase.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/papers.js"></script>
+<script src="js/thread.js"></script>
+
+</body>
+</html>

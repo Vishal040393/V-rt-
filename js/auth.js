@@ -121,9 +121,9 @@ function updateNavUser() {
           </div>
         </div>
         <div class="pm-sep"></div>
-        <button class="pm-item" onclick="showToast('Profile page coming soon!')">👤 My Profile</button>
-        <button class="pm-item" onclick="showToast('My posts coming soon!')">📝 My Posts</button>
-        <button class="pm-item" onclick="showToast('Saved threads coming soon!')">🔖 Saved Threads</button>
+        <button class="pm-item" onclick="window.location.href='profile.html'">👤 My Profile</button>
+        <button class="pm-item" onclick="window.location.href='myposts.html'">📝 My Posts</button>
+        <button class="pm-item" onclick="window.location.href='saved.html'">🔖 Saved Posts</button>
         <div class="pm-sep"></div>
         <button class="pm-item" onclick="logout()" style="color:var(--red);">↩ Sign Out</button>
       </div>

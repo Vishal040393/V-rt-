@@ -420,3 +420,28 @@
   .thread-col { padding-right: 0; }
   .app-hdr { padding: 1.2rem 1.5rem; }
 }
+
+/* ── Tag add/remove ── */
+.tag-add-btn {
+  padding: 0.22rem 0.65rem;
+  background: var(--navy); border: none;
+  border-radius: 2px; color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; cursor: pointer;
+  transition: background 0.2s;
+}
+.tag-add-btn:hover { background: var(--navy-mid); }
+
+.tag-pill {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+}
+.tag-remove {
+  background: none; border: none;
+  color: var(--muted); cursor: pointer;
+  font-size: 0.8rem; line-height: 1;
+  padding: 0; transition: color 0.15s;
+}
+.tag-remove:hover { color: var(--red); }
+
+/* ── Save button active state ── */
+.action-btn.saved-active { color: var(--amber); }

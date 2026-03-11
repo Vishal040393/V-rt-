@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile — Vārtā</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <style>
+    .profile-page { padding: 100px 2rem 4rem; max-width: 720px; margin: 0 auto; }
+
+    .profile-card {
+      background: white; border: 1px solid var(--border);
+      border-radius: 6px; padding: 2rem; margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    .profile-top {
+      display: flex; align-items: center; gap: 1.4rem; margin-bottom: 1.8rem;
+    }
+    .profile-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--amber); color: var(--navy);
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .profile-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-weight: 700; color: var(--navy);
+    }
+    .profile-role {
+      font-size: 0.88rem; color: var(--muted); font-style: italic; margin-top: 0.2rem;
+    }
+    .profile-email {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-weight: 600; color: var(--navy);
+      margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-grid .full { grid-column: 1 / -1; }
+
+    .stat-row {
+      display: flex; gap: 1.5rem; margin-top: 1rem;
+    }
+    .pstat {
+      border-left: 2px solid var(--amber); padding-left: 0.8rem;
+    }
+    .pstat-n {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--navy); line-height: 1;
+    }
+    .pstat-l {
+      font-size: 0.68rem; color: var(--muted);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.15rem;
+    }
+
+    .btn-save-profile {
+      background: var(--navy); color: white; border: none;
+      padding: 0.75rem 2rem;
+      font-family: 'Source Serif 4', serif; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; border-radius: 2px; transition: background 0.2s;
+      margin-top: 1rem;
+    }
+    .btn-save-profile:hover { background: var(--navy-mid); }
+
+    .not-logged-in {
+      text-align: center; padding: 4rem 2rem;
+    }
+    .not-logged-in h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; color: var(--navy); margin-bottom: 0.5rem;
+    }
+    .not-logged-in p { color: var(--muted); margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-brand" onclick="window.location.href='index.html'">
+      <span class="nav-brand-dev">वार्ता</span>
+      <span class="nav-brand-lat">Vārtā</span>
+    </div>
+    <div class="nav-right" id="nav-right">
+      <button class="btn-nav" onclick="openAuth('login')">Sign In</button>
+      <button class="btn-nav btn-nav-filled" onclick="openAuth('signup')">Join Free</button>
+    </div>
+  </nav>
+
+  <!-- Auth modal -->
+  <div class="modal-overlay" id="auth-modal" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title"><span>वार्ता</span> Vārtā</div>
+        <button class="modal-close" onclick="closeAuth()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button class="mtab active" id="tab-login"  onclick="switchAuthTab('login')">Sign In</button>
+          <button class="mtab"        id="tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+        </div>
+        <div id="login-form">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="login-email" placeholder="you@university.edu">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="login-pass" placeholder="••••••••">
+          </div>
+          <button class="btn-full" onclick="doLogin()">Sign In →</button>
+        </div>
+        <div id="signup-form" style="display:none;">
+          <div class="field-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" id="su-fname" placeholder="Arjun">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" id="su-lname" placeholder="Sharma">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Institutional Email</label>
+            <input type="email" class="form-input" id="su-email" placeholder="researcher@university.edu">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <select class="role-select" id="su-role">
+              <option>PhD Candidate</option><option>Postdoctoral Researcher</option>
+              <option>Assistant Professor</option><option>Associate Professor</option>
+              <option>Full Professor</option><option>Research Scientist (Industry)</option>
+              <option>Independent Researcher</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Institution</label>
+            <input type="text" class="form-input" id="su-inst" placeholder="MIT, IIT Delhi…">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="su-pass" placeholder="Min. 8 characters">
+          </div>
+          <button class="btn-full" onclick="doSignup()">Create Account →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="profile-page" id="profile-page">
+    <div class="not-logged-in" id="not-logged-in" style="display:none;">
+      <h2>Sign in to view your profile</h2>
+      <p>You need to be logged in to access this page.</p>
+      <button class="btn-full" style="max-width:200px;margin:0 auto;" onclick="openAuth('login')">Sign In →</button>
+    </div>
+
+    <div id="profile-content" style="display:none;">
+      <!-- Profile header -->
+      <div class="profile-card">
+        <div class="profile-top">
+          <div class="profile-avatar" id="prof-avatar">?</div>
+          <div>
+            <div class="profile-name" id="prof-name">—</div>
+            <div class="profile-role" id="prof-role">—</div>
+            <div class="profile-email" id="prof-email">—</div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="pstat"><div class="pstat-n" id="prof-posts">—</div><div class="pstat-l">Posts</div></div>
+          <div class="pstat"><div class="pstat-n" id="prof-replies">—</div><div class="pstat-l">Replies</div></div>
+          <div class="pstat"><div class="pstat-n" id="prof-saved">—</div><div class="pstat-l">Saved</div></div>
+        </div>
+      </div>
+
+      <!-- Edit profile -->
+      <div class="profile-card">
+        <div class="section-title">Edit Profile</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" id="edit-fname">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" id="edit-lname">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Institution</label>
+            <input type="text" class="form-input" id="edit-inst">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Role</label>
+            <select class="role-select" id="edit-role" style="width:100%">
+              <option>PhD Candidate</option><option>Postdoctoral Researcher</option>
+              <option>Assistant Professor</option><option>Associate Professor</option>
+              <option>Full Professor</option><option>Research Scientist (Industry)</option>
+              <option>Independent Researcher</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-save-profile" onclick="saveProfile()">Save Changes →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Wait for session restore
+      await new Promise(r => setTimeout(r, 300));
+      if (!currentUser) {
+        document.getElementById('not-logged-in').style.display = 'block';
+        return;
+      }
+      loadProfile();
+    });
+
+    async function loadProfile() {
+      document.getElementById('profile-content').style.display = 'block';
+
+      // Fill header
+      document.getElementById('prof-avatar').textContent = currentUser.letter;
+      document.getElementById('prof-name').textContent   = currentUser.name;
+      document.getElementById('prof-role').textContent   = currentUser.role + (currentUser.inst ? ' · ' + currentUser.inst : '');
+      document.getElementById('prof-email').textContent  = currentUser.email;
+
+      // Pre-fill edit form
+      const parts = currentUser.name.split(' ');
+      document.getElementById('edit-fname').value = parts[0] || '';
+      document.getElementById('edit-lname').value = parts.slice(1).join(' ') || '';
+      document.getElementById('edit-inst').value  = currentUser.inst || '';
+      document.getElementById('edit-role').value  = currentUser.role || 'Researcher';
+
+      // Load stats
+      const [{ count: posts }, { count: replies }, { count: saved }] = await Promise.all([
+        sb.from('posts').select('*', { count: 'exact', head: true }).eq('user_id', currentUser.id),
+        sb.from('replies').select('*', { count: 'exact', head: true }).eq('user_id', currentUser.id),
+        sb.from('saved_posts').select('*', { count: 'exact', head: true }).eq('user_id', currentUser.id),
+      ]);
+
+      document.getElementById('prof-posts').textContent   = posts   ?? 0;
+      document.getElementById('prof-replies').textContent = replies ?? 0;
+      document.getElementById('prof-saved').textContent   = saved   ?? 0;
+    }
+
+    async function saveProfile() {
+      const fn   = document.getElementById('edit-fname').value.trim();
+      const ln   = document.getElementById('edit-lname').value.trim();
+      const inst = document.getElementById('edit-inst').value.trim();
+      const role = document.getElementById('edit-role').value;
+
+      if (!fn) { showToast('First name is required.'); return; }
+
+      const { error } = await sb.auth.updateUser({
+        data: { full_name: fn + ' ' + ln, institution: inst, role }
+      });
+
+      if (error) { showToast('Error: ' + error.message); return; }
+
+      // Update local session
+      currentUser.name = fn + ' ' + ln;
+      currentUser.inst = inst;
+      currentUser.role = role;
+      currentUser.letter = fn[0].toUpperCase();
+      updateNavUser();
+      loadProfile();
+      showToast('Profile updated!');
+    }
+  </script>
+</body>
+</html>
